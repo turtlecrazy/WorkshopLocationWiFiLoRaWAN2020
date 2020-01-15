@@ -1,0 +1,25 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2509
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 [\
+    \{\
+        "id": "3d88a2ee.4aa0de",\
+        "type": "function",\
+        "z": "c2f7b7e2.c17498",\
+        "name": "LoRa Cloud geolocation",\
+        "func": "\\nvar loracloud_token = \\"YOURLORACLOUDTOKEN\\"\\nvar dev_url = \\"https://gls.loracloud.com/api/v3/solve/singleframe\\";\\n\\n\\n\\nvar data = \{\\n            \\"gateways\\": [],\\n            \\"frame\\":[]\\n            \};\\nif (msg.payload.metadata.gateways[0]) \{\\n\\tdata[\\"gateways\\"][0] = \{\\n\\t\\t\\t\\t\\"gatewayId\\": msg.payload.metadata.gateways[0].gtw_id,\\n\\t\\t\\t\\t\\"latitude\\": msg.payload.metadata.gateways[0].latitude,\\n\\t\\t\\t\\t\\"longitude\\": msg.payload.metadata.gateways[0].longitude,\\n\\t\\t\\t\\t\\"altitude\\": msg.payload.metadata.gateways[0].altitude,\\n\\t\\t\\t\\t\};\\n\}\\nif (msg.payload.metadata.gateways[1]) \{\\n\\tdata[\\"gateways\\"][1] = \{\\n\\t\\t\\t\\t\\"gatewayId\\": msg.payload.metadata.gateways[1].gtw_id,\\n\\t\\t\\t\\t\\"latitude\\": msg.payload.metadata.gateways[1].latitude,\\n\\t\\t\\t\\t\\"longitude\\": msg.payload.metadata.gateways[1].longitude,\\n\\t\\t\\t\\t\\"altitude\\": msg.payload.metadata.gateways[1].altitude,\\n\\t\\t\\t\\t\};\\n\}\\nif (msg.payload.metadata.gateways[2]) \{\\n\\tdata[\\"gateways\\"][2] = \{\\n\\t\\t\\t\\t\\"gatewayId\\": msg.payload.metadata.gateways[2].gtw_id,\\n\\t\\t\\t\\t\\"latitude\\": msg.payload.metadata.gateways[2].latitude,\\n\\t\\t\\t\\t\\"longitude\\": msg.payload.metadata.gateways[2].longitude,\\n\\t\\t\\t\\t\\"altitude\\": msg.payload.metadata.gateways[2].altitude,\\n\\t\\t\\t\\t\};\\n\}\\nif (msg.payload.metadata.gateways[3]) \{\\n\\tdata[\\"gateways\\"][3] = \{\\n\\t\\t\\t\\t\\"gatewayId\\": msg.payload.metadata.gateways[3].gtw_id,\\n\\t\\t\\t\\t\\"latitude\\": msg.payload.metadata.gateways[3].latitude,\\n\\t\\t\\t\\t\\"longitude\\": msg.payload.metadata.gateways[3].longitude,\\n\\t\\t\\t\\t\\"altitude\\": msg.payload.metadata.gateways[3].altitude,\\n\\t\\t\\t\\t\};\\n\}\\n\\n\\n\\n\\n\\n\\n\\n\\nif (msg.payload.metadata.gateways[0]) \{\\n    data[\\"frame\\"][0] = [msg.payload.metadata.gateways[0].gtw_id,msg.payload.metadata.gateways[0].rf_chain,msg.payload.metadata.gateways[0].timestamp,msg.payload.metadata.gateways[0].rssi,msg.payload.metadata.gateways[0].snr]\\n\}\\nif (msg.payload.metadata.gateways[1]) \{\\n    data[\\"frame\\"][1] = [msg.payload.metadata.gateways[0].gtw_id,msg.payload.metadata.gateways[0].rf_chain,msg.payload.metadata.gateways[0].timestamp,msg.payload.metadata.gateways[0].rssi,msg.payload.metadata.gateways[0].snr]\\n\}\\nif (msg.payload.metadata.gateways[2]) \{\\n    data[\\"frame\\"][2] = [msg.payload.metadata.gateways[0].gtw_id,msg.payload.metadata.gateways[0].rf_chain,msg.payload.metadata.gateways[0].timestamp,msg.payload.metadata.gateways[0].rssi,msg.payload.metadata.gateways[0].snr]\\n\}\\nif (msg.payload.metadata.gateways[3]) \{\\n    data[\\"frame\\"][3] = [msg.payload.metadata.gateways[0].gtw_id,msg.payload.metadata.gateways[0].rf_chain,msg.payload.metadata.gateways[0].timestamp,msg.payload.metadata.gateways[0].rssi,msg.payload.metadata.gateways[0].snr]\\n\}\\n\\n\\n\\nvar msg = \{\\n            \\"method\\" : \\"POST\\",\\n            \\"url\\" : dev_url,\\n            \\"headers\\" : \{\\n                \\"Ocp-Apim-Subscription-Key\\" : \\"AQEAHGaMit81n00TPjZtvdL/Dktp9DbJJcEHw1pC3K/xVE6dpJNu\\",\\n                \\"Content-Type\\": \\"application/json\\"\\n            \},\\n            \\"payload\\" : JSON.stringify(data)\\n            \};\\n\\nreturn msg;\\n",\
+        "outputs": 1,\
+        "noerr": 0,\
+        "x": 361,\
+        "y": 380,\
+        "wires": [\
+            [\
+                "bc5b4539.2852c"\
+            ]\
+        ]\
+    \}\
+]}
