@@ -1,0 +1,452 @@
+[
+    {
+        "id": "33904170.e35066",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Convert to GPS-json",
+        "func": "var msg1 = {};\n\nif (msg.payload.location) {\n\n    msg1.payload = msg.payload;\n    msg1.payload.date = Date().toString();\n    msg1.payload.lon = msg.payload.location.lng;\n    msg1.payload.lat = msg.payload.location.lat;\n\n    // processed with Google\n    if (msg.payload.accuracy) {\n        msg1.payload.radius = msg.payload.accuracy;\n        delete msg1.payload.accuracy;\n    }\n    \n    // processed with HERE\n    if (msg.payload.location.accuracy) {\n        msg1.payload.radius = msg.payload.location.accuracy;\n    }\n\n    delete msg1.payload.location;\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 574,
+        "y": 84,
+        "wires": [
+            [
+                "3eebd796.68d308"
+            ]
+        ]
+    },
+    {
+        "id": "672c2e02.e187f",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Convert to TrackLine",
+        "func": "var msg1 = {};\nif (msg.payload) {\n    msg1.payload = msg.payload;\n\n    msg1.payload.layer = \"Track\";\n    msg1.payload.name = \"Track line\";\n    \n    delete msg1.payload.radius;\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 582,
+        "y": 209,
+        "wires": [
+            [
+                "163c9ecb.cd0731"
+            ]
+        ]
+    },
+    {
+        "id": "eeca7a33.81c228",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Convert to TrackPins",
+        "func": "var msg1 = {};\nif (msg.payload) {\n    msg1.payload=msg.payload;\n\n    msg1.payload.layer = \"Pins\";\n    msg1.payload.iconColor = \"blue\";\n    msg1.payload.name=Date().toString();\n    msg1.payload.icon = \"fa-wifi\";\n    \n    delete msg1.payload.radius;\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 583,
+        "y": 169,
+        "wires": [
+            [
+                "70de8592.565134"
+            ]
+        ]
+    },
+    {
+        "id": "960ba7c5.2d19f8",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Convert to Worldmap",
+        "func": "var msg1 = {};\nif (msg.payload) {\n    msg1.payload=msg.payload;\n\n    msg1.payload.layer = \"Current Location\";\n    msg1.payload.name = \"Current Location\";\n    msg1.payload.iconColor = \"orange\";\n    msg1.payload.icon = \"wifi\";\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 577,
+        "y": 128,
+        "wires": [
+            [
+                "70de8592.565134"
+            ]
+        ]
+    },
+    {
+        "id": "3eebd796.68d308",
+        "type": "switch",
+        "z": "c030ea18.227328",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 360,
+        "y": 118,
+        "wires": [
+            [
+                "672c2e02.e187f",
+                "960ba7c5.2d19f8",
+                "eeca7a33.81c228"
+            ]
+        ]
+    },
+    {
+        "id": "210849b.ada12b6",
+        "type": "worldmap",
+        "z": "c030ea18.227328",
+        "name": "HERE geolocation",
+        "lat": "51.839617",
+        "lon": " 5.877225",
+        "zoom": "",
+        "layer": "OSM grey",
+        "cluster": "",
+        "maxage": "12000",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "path": "",
+        "x": 957,
+        "y": 181,
+        "wires": []
+    },
+    {
+        "id": "163c9ecb.cd0731",
+        "type": "worldmap-tracks",
+        "z": "c030ea18.227328",
+        "name": "Map Track",
+        "depth": "200",
+        "x": 580.5,
+        "y": 263,
+        "wires": [
+            [
+                "70de8592.565134"
+            ]
+        ]
+    },
+    {
+        "id": "938e13bc.bdea28",
+        "type": "http request",
+        "z": "c030ea18.227328",
+        "name": "",
+        "method": "use",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 557,
+        "y": 34,
+        "wires": [
+            [
+                "a8b35a7d.246ba",
+                "5098a8ee.548358"
+            ]
+        ]
+    },
+    {
+        "id": "a8b35a7d.246ba",
+        "type": "json",
+        "z": "c030ea18.227328",
+        "name": "Convert to JSON",
+        "pretty": false,
+        "x": 349,
+        "y": 84,
+        "wires": [
+            [
+                "33904170.e35066"
+            ]
+        ]
+    },
+    {
+        "id": "a756bd2e.bbbf08",
+        "type": "mqtt in",
+        "z": "c030ea18.227328",
+        "name": "crazyturtletracker",
+        "topic": "crazyturtletracker/devices/crazyturtle01/up",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "8303d8e5.1bf908",
+        "x": 109,
+        "y": 365,
+        "wires": [
+            [
+                "a1ed1743.cfaee8",
+                "a0e73d82.045898"
+            ]
+        ]
+    },
+    {
+        "id": "a1ed1743.cfaee8",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "LoRa Cloud geolocation",
+        "func": "\nvar loracloud_token = \"AQEAHGaMit81n00TPjZtvdL/Dktp9DbJJcEHw1pC3K/xVE6dpJNu\"\nvar dev_url = \"https://gls.loracloud.com/api/v3/solve/singleframe\";\n\n\n\nvar data = {\n            \"gateways\": [],\n            \"frame\":[]\n            };\nif (msg.payload.metadata.gateways[0]) {\n\tdata[\"gateways\"][0] = {\n\t\t\t\t\"gatewayId\": msg.payload.metadata.gateways[0].gtw_id,\n\t\t\t\t\"latitude\": msg.payload.metadata.gateways[0].latitude,\n\t\t\t\t\"longitude\": msg.payload.metadata.gateways[0].longitude,\n\t\t\t\t\"altitude\": msg.payload.metadata.gateways[0].altitude,\n\t\t\t\t};\n}\nif (msg.payload.metadata.gateways[1]) {\n\tdata[\"gateways\"][1] = {\n\t\t\t\t\"gatewayId\": msg.payload.metadata.gateways[1].gtw_id,\n\t\t\t\t\"latitude\": msg.payload.metadata.gateways[1].latitude,\n\t\t\t\t\"longitude\": msg.payload.metadata.gateways[1].longitude,\n\t\t\t\t\"altitude\": msg.payload.metadata.gateways[1].altitude,\n\t\t\t\t};\n}\nif (msg.payload.metadata.gateways[2]) {\n\tdata[\"gateways\"][2] = {\n\t\t\t\t\"gatewayId\": msg.payload.metadata.gateways[2].gtw_id,\n\t\t\t\t\"latitude\": msg.payload.metadata.gateways[2].latitude,\n\t\t\t\t\"longitude\": msg.payload.metadata.gateways[2].longitude,\n\t\t\t\t\"altitude\": msg.payload.metadata.gateways[2].altitude,\n\t\t\t\t};\n}\nif (msg.payload.metadata.gateways[3]) {\n\tdata[\"gateways\"][3] = {\n\t\t\t\t\"gatewayId\": msg.payload.metadata.gateways[3].gtw_id,\n\t\t\t\t\"latitude\": msg.payload.metadata.gateways[3].latitude,\n\t\t\t\t\"longitude\": msg.payload.metadata.gateways[3].longitude,\n\t\t\t\t\"altitude\": msg.payload.metadata.gateways[3].altitude,\n\t\t\t\t};\n}\n\n\n\n\n\n\n\n\nif (msg.payload.metadata.gateways[0]) {\n    data[\"frame\"][0] = [msg.payload.metadata.gateways[0].gtw_id,msg.payload.metadata.gateways[0].rf_chain,msg.payload.metadata.gateways[0].timestamp,msg.payload.metadata.gateways[0].rssi,msg.payload.metadata.gateways[0].snr]\n}\nif (msg.payload.metadata.gateways[1]) {\n    data[\"frame\"][1] = [msg.payload.metadata.gateways[0].gtw_id,msg.payload.metadata.gateways[0].rf_chain,msg.payload.metadata.gateways[0].timestamp,msg.payload.metadata.gateways[0].rssi,msg.payload.metadata.gateways[0].snr]\n}\nif (msg.payload.metadata.gateways[2]) {\n    data[\"frame\"][2] = [msg.payload.metadata.gateways[0].gtw_id,msg.payload.metadata.gateways[0].rf_chain,msg.payload.metadata.gateways[0].timestamp,msg.payload.metadata.gateways[0].rssi,msg.payload.metadata.gateways[0].snr]\n}\nif (msg.payload.metadata.gateways[3]) {\n    data[\"frame\"][3] = [msg.payload.metadata.gateways[0].gtw_id,msg.payload.metadata.gateways[0].rf_chain,msg.payload.metadata.gateways[0].timestamp,msg.payload.metadata.gateways[0].rssi,msg.payload.metadata.gateways[0].snr]\n}\n\n\n\nvar msg = {\n            \"method\" : \"POST\",\n            \"url\" : dev_url,\n            \"headers\" : {\n                \"Ocp-Apim-Subscription-Key\" : \"AQEAHGaMit81n00TPjZtvdL/Dktp9DbJJcEHw1pC3K/xVE6dpJNu\",\n                \"Content-Type\": \"application/json\"\n            },\n            \"payload\" : JSON.stringify(data)\n            };\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 361,
+        "y": 363,
+        "wires": [
+            [
+                "c87ad6e9.c88f8"
+            ]
+        ]
+    },
+    {
+        "id": "d23afafd.7979c",
+        "type": "mqtt in",
+        "z": "c030ea18.227328",
+        "name": "crazyturtletracker",
+        "topic": "crazyturtletracker/devices/crazyturtle01/up",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "8303d8e5.1bf908",
+        "x": 96,
+        "y": 70,
+        "wires": [
+            [
+                "4ebf4c7.499df34"
+            ]
+        ]
+    },
+    {
+        "id": "4ebf4c7.499df34",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Ask HERE Geolocation API",
+        "func": "var here_appid = \"XOyGdOnvBrVKhZyfitdr\";\nvar here_appcode = \"RXSjLqX23VkvgwojT0WB6g\";\nvar here_apikey = \"zJ_o4jdgoryZBFCWMQiwyOp9nbTLFWKDIEkHSiomgvw\"\nvar dev_url = \"https://pos.ls.hereapi.com/positioning/v1/locate?apiKey=\"+here_apikey;\n\nvar data = {\n            \"wlan\": []\n            };\n\nif (msg.payload.payload_fields.macaddress.mac_1) {\n\tdata[\"wlan\"][0] = {\n\t\t\t\t\"mac\": msg.payload.payload_fields.macaddress.mac_1,\n\t\t\t\t};\n}\n\nif (msg.payload.payload_fields.macaddress.mac_2) {\n\tdata[\"wlan\"][1] = {\n\t\t\t\t\"mac\": msg.payload.payload_fields.macaddress.mac_2,\n\t\t\t\t};\n}\n\n\n\nvar msg = {\n            \"method\" : \"POST\",\n            \"url\" : dev_url,\n            \"headers\" : {\n                        \"Content-Type\": \"application/json\"\n                        },\n            \"payload\" : JSON.stringify(data)\n            };\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 344,
+        "y": 34,
+        "wires": [
+            [
+                "938e13bc.bdea28"
+            ]
+        ]
+    },
+    {
+        "id": "c87ad6e9.c88f8",
+        "type": "http request",
+        "z": "c030ea18.227328",
+        "name": "",
+        "method": "use",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 565,
+        "y": 416,
+        "wires": [
+            [
+                "c141234b.2e4128"
+            ]
+        ]
+    },
+    {
+        "id": "e9935a07.14b73",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Convert to GPS-json",
+        "func": "var msg1 = {};\n\nif (msg.payload.result.locationEst) {\n\n    msg1.payload = msg.payload;\n    msg1.payload.date = Date().toString();\n    msg1.payload.lon = msg.payload.result.locationEst.longitude;\n    msg1.payload.lat = msg.payload.result.locationEst.latitude;\n\n    // processed with Google\n    if (msg.payload.result.locationEst) {\n        msg1.payload.radius = msg.payload.result.locationEst.toleranceHoriz;\n        delete msg1.payload.result.locationEst.toleranceHoriz;\n    }\n    \n    // processed with HERE\n    if (msg.payload.result.locationEst.toleranceHoriz) {\n        msg1.payload.radius = msg.payload.result.locationEst.toleranceHoriz;\n    }\n\n    delete msg1.payload.result.locationEst.toleranceHoriz;\n}\n\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 566,
+        "y": 450,
+        "wires": [
+            [
+                "bab88ca4.94a518"
+            ]
+        ]
+    },
+    {
+        "id": "fe0736dd.3e148",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Convert to TrackLine",
+        "func": "var msg1 = {};\nif (msg.payload) {\n    msg1.payload = msg.payload;\n\n    msg1.payload.layer = \"Track\";\n    msg1.payload.name = \"Track line\";\n    \n    delete msg1.payload.radius;\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 574,
+        "y": 575,
+        "wires": [
+            [
+                "f2de102.4a3af7"
+            ]
+        ]
+    },
+    {
+        "id": "179e9571.ca5b23",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Convert to TrackPins",
+        "func": "var msg1 = {};\nif (msg.payload) {\n    msg1.payload=msg.payload;\n\n    msg1.payload.layer = \"Pins\";\n    msg1.payload.iconColor = \"red\";\n    msg1.payload.name=Date().toString();\n    msg1.payload.icon = \"signal-stream\";\n    \n    delete msg1.payload.radius;\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 575,
+        "y": 535,
+        "wires": [
+            [
+                "70de8592.565134"
+            ]
+        ]
+    },
+    {
+        "id": "8a25a860.fcb66",
+        "type": "function",
+        "z": "c030ea18.227328",
+        "name": "Convert to Worldmap",
+        "func": "var msg1 = {};\nif (msg.payload) {\n    msg1.payload=msg.payload;\n\n    msg1.payload.layer = \"Current Location\";\n    msg1.payload.name = \"Current Location\";\n    msg1.payload.iconColor = \"orange\";\n    msg1.payload.icon = \"wifi\";\n}\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 569,
+        "y": 494,
+        "wires": [
+            [
+                "70de8592.565134"
+            ]
+        ]
+    },
+    {
+        "id": "bab88ca4.94a518",
+        "type": "switch",
+        "z": "c030ea18.227328",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 335,
+        "y": 481,
+        "wires": [
+            [
+                "fe0736dd.3e148",
+                "8a25a860.fcb66",
+                "179e9571.ca5b23"
+            ]
+        ]
+    },
+    {
+        "id": "f2de102.4a3af7",
+        "type": "worldmap-tracks",
+        "z": "c030ea18.227328",
+        "name": "Map Track",
+        "depth": "200",
+        "x": 572.5,
+        "y": 629,
+        "wires": [
+            [
+                "70de8592.565134"
+            ]
+        ]
+    },
+    {
+        "id": "c141234b.2e4128",
+        "type": "json",
+        "z": "c030ea18.227328",
+        "name": "Convert to JSON",
+        "pretty": false,
+        "x": 350,
+        "y": 425,
+        "wires": [
+            [
+                "e9935a07.14b73"
+            ]
+        ]
+    },
+    {
+        "id": "de666f76.1a99e8",
+        "type": "worldmap",
+        "z": "c030ea18.227328",
+        "name": "LoRaWANgeolocation",
+        "lat": "51.839617",
+        "lon": " 5.877225",
+        "zoom": "",
+        "layer": "Esri Satellite",
+        "cluster": "",
+        "maxage": "12000",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "path": "",
+        "x": 988,
+        "y": 359,
+        "wires": []
+    },
+    {
+        "id": "a0e73d82.045898",
+        "type": "debug",
+        "z": "c030ea18.227328",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 133,
+        "y": 471,
+        "wires": []
+    },
+    {
+        "id": "70de8592.565134",
+        "type": "worldmap",
+        "z": "c030ea18.227328",
+        "name": "LoRaWANgeolocation",
+        "lat": "51.839617",
+        "lon": " 5.877225",
+        "zoom": "",
+        "layer": "Esri Satellite",
+        "cluster": "",
+        "maxage": "12000",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "path": "",
+        "x": 932,
+        "y": 456,
+        "wires": []
+    },
+    {
+        "id": "5098a8ee.548358",
+        "type": "debug",
+        "z": "c030ea18.227328",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 828,
+        "y": 124,
+        "wires": []
+    },
+    {
+        "id": "8303d8e5.1bf908",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "",
+        "broker": "mqtt://eu.thethings.network",
+        "port": "1990",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": ""
+    }
+]
